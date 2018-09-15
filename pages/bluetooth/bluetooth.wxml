@@ -1,0 +1,39 @@
+<view>
+    初始化蓝牙适配器: <text style='color:red'>{{openBluetoothAdapter ? '成功' : '失败'}}</text>
+</view>
+<view>
+    蓝牙适配器是否可用:<text style='color:red'> {{available ? '可用' : '不可用'}}</text>    
+</view>
+<view>
+    蓝牙适配器是否正在搜索:<text style='color:red'> {{discovering ? '正在搜索' : '停止搜索'}}</text>
+</view>
+<view>
+    连接: <text style="color:red;">{{connected ? '连接成功' : '连接失败'}}</text>
+</view>
+<button bindtap='openBluetooth'>初始化蓝牙适配器</button>
+<button bindtap='search'>搜索蓝牙</button>
+<button bindtap='getConnected'>根据 uuid 获取处于已连接状态的设备</button>
+
+<view style="margin-top:30rpx;font-size: 22rpx;">
+    <block wx:for="{{deviceList}}" wx:for-item="device" wx:key="{{device.deviceId}}">
+
+        <view  style="margin-bottom: 20rpx;border: 1px solid red;">
+            <view>设备名称: {{device.name}}</view>
+            <view>设备ID: {{device.deviceId}}</view>
+            <view>广播数据: {{device.advertisData}}</view>
+            <view>信号强度: {{device.RSSI}}</view>
+            <view>UUID:
+                <block wx:for="{{device.advertisServiceUUIDs}}" wx:for-item="uuid" wx:key="{{index}}">
+                    <view style="margin-left: 50rpx;">{{uuid}}</view>
+                </block>
+            </view>
+            <button size="mini" type="primary" data-deviceid="{{device.deviceId}}" bindtap="connect">连接</button>
+            <button size="mini" type="default" data-deviceid="{{device.deviceId}}" bindtap="getServiceEvent">获取服务</button>
+            <view>
+                服务: {{seivice}}
+            </view>
+        </view>
+
+    </block>
+</view>
+
