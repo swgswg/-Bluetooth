@@ -16,33 +16,12 @@ Page({
     },
 
     // 初始化蓝牙
-    openBluetooth(){
-        let that = this;
-        wx.openBluetoothAdapter({
-            success(e){
-                if (e.errMsg == 'openBluetoothAdapter:ok'){
-                    that.setData({
-                        openBluetoothAdapter: true
-                    });
-                    that.getBluetoothState();
-                }
-            },
-            fail(){
-                wx.showModal({
-                    title: '温馨提示',
-                    content: '请检查手机蓝牙是否开启',
-                    showCancel:false
-                });
-                that.setData({
-                    openBluetoothAdapter: false
-                });
-            },
-
-        })
+    openEvent(){
+        this.openBluetooth();
     },
     
     // 搜索蓝牙
-    search(){
+    searchEvent(){
         let that = this;
         if (that.data.discovering){
            toast('正在搜索');
@@ -71,7 +50,7 @@ Page({
     },
 
     // 连接设备
-    connect(e){
+    connectEvent(e){
         let deviceId = e.currentTarget.dataset.deviceid;
         // 停止搜寻附近的蓝牙外围设备
         this.stopDiscovery();
@@ -99,13 +78,37 @@ Page({
         });
     },
 
-
     // 获取服务
     getServiceEvent(e){
         let deviceId = e.currentTarget.dataset.deviceid;
         this.getServices(deviceId);
     },
 
+    // 初始化蓝牙模块
+    openBluetooth(){
+        let that = this;
+        wx.openBluetoothAdapter({
+            success(e){
+                if (e.errMsg == 'openBluetoothAdapter:ok'){
+                    that.setData({
+                        openBluetoothAdapter: true
+                    });
+                    that.getBluetoothState();
+                }
+            },
+            fail(){
+                wx.showModal({
+                    title: '温馨提示',
+                    content: '请检查手机蓝牙是否开启',
+                    showCancel:false
+                });
+                that.setData({
+                    openBluetoothAdapter: false
+                });
+            },
+
+        })
+    },
 
     // 获取本机蓝牙适配器状态
     getBluetoothState(){
@@ -390,6 +393,17 @@ Page({
         })
     },
 
+    // 关闭蓝牙模块
+    closeBluetooth(){
+        wx.closeBluetoothAdapter({
+            success(){
+                toast('关闭成功');
+            },
+            fail(){
+                toast('关闭失败');
+            }
+        });
+    },
 });
 
 // ArrayBuffer转16进度字符串示例
