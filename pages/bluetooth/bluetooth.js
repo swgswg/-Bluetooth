@@ -1,7 +1,7 @@
 var connectingDeviceId = '';
-var services_UUID = null;
-var characteristic_UUID = null;
-
+var services_UUID = '';
+var characteristic_UUID = '';
+var wvalue = '';
 // 初始化蓝牙(判断用户有没有开蓝牙) --> 搜索蓝牙 --> 连接蓝牙 --> 根据连接的deviceId获取服务serviceUUID -->
 // 根据服务serviceUUID获取特征值 --> 根据特征值获取 读写权限 --> 根据读写 数据交互
 Page({
@@ -13,6 +13,7 @@ Page({
         connected:false,
         services:'',
         characteristics:'',
+        readValue:'',
     },
 
     onLoad(){
@@ -55,6 +56,9 @@ Page({
 
     // 连接设备
     connectEvent(e){
+        if(this.data.connected){
+            return;
+        }
         let deviceId = e.currentTarget.dataset.deviceid;
         // 停止搜寻附近的蓝牙外围设备
         this.stopDiscovery();
@@ -67,19 +71,20 @@ Page({
 
     },
 
-    // 根据 uuid 获取处于已连接状态的设备
-    getConnected(){
-        wx.getConnectedBluetoothDevices({
-            services:servicesUUID,
-            success(res){
-                console.log('根据 uuid 获取处于已连接状态的设备:成功---');
-                console.log(res);
-            },
-            fail(res){
-                console.log('根据 uuid 获取处于已连接状态的设备:失败---')
-                console.log(res);
-            },
-        });
+    inputValue(e){
+        wvalue = e.detail.value;
+    },
+
+    // 发送
+    sendvalue(){
+        console.log('sendvalue---------');
+        console.log(connectingDeviceId);
+        console.log(services_UUID);
+        console.log(characteristic_UUID);
+        console.log('sendvalue---------');
+        console.log(wvalue);
+        this.writeValue(connectingDeviceId,services_UUID,characteristic_UUID,wvalue);
+
     },
 
     // 获取服务
@@ -174,10 +179,8 @@ Page({
             // 兼容安卓及iOS设备
             if(res.deviceId){
                 that.devicesData(res);
-
             } else if(res.devices){
                 that.devicesData(res.devices[0]);
-
             } else if(res[0]){
                 that.devicesData(res[0]);
             }
@@ -190,14 +193,15 @@ Page({
         let len = deviceList.length;
         let isExist = false;
         console.log(new_devices);
+        if(!new_devices.name){
+            new_devices.name = '空';
+            return;
+        }
         let advertisData = ab2hex(new_devices.advertisData);
         if(!advertisData){
             advertisData = '空';
         }
         new_devices.advertisData = advertisData;
-        if(!new_devices.name){
-            new_devices.name = '空'
-        }
         for(let i = 0; i < len; i++){
             if(new_devices.deviceId == deviceList[i].deviceId){
                 isExist = true;
@@ -326,30 +330,30 @@ Page({
             success(res){
                 console.log('获取蓝牙设备characteristic');
                 console.log(res);
-                for(let j = 0; j < res.length; j++){
-                    if(res[j].errCode == 0){
-                        let characteristics = res[j].characteristics;
-                        let len = characteristics.length;
-                        for(let k = 0; k < len; k++){
-                            let indicate = characteristics[k].properties.indicate;
-                            let notify = characteristics[k].properties.notify;
-                            let read = characteristics[k].properties.read;
-                            let write = characteristics[k].properties.write;
-                            if(indicate && notify && read && write){
-                                connectingDeviceId = res[j].deviceId;
-                                console.log('connectingDeviceId');
-                                console.log(connectingDeviceId);
-                                services_UUID = res[j].serviceId;
-                                console.log('services_UUID');
-                                console.log(services_UUID);
-                                characteristic_UUID = characteristics[i].uuid;
-                                console.log('characteristic_UUID');
-                                console.log(characteristic_UUID);
-                            }
+                if(res.errCode == 0){
+                    let characteristics = res.characteristics;
+                    let len = characteristics.length;
+                    for(let k = 0; k < len; k++){
+                        let indicate = characteristics[k].properties.indicate;
+                        let notify = characteristics[k].properties.notify;
+                        let read = characteristics[k].properties.read;
+                        let write = characteristics[k].properties.write;
+                        console.log(indicate,notify,read,write);
+                        if(indicate && notify && read && write){
+                            connectingDeviceId = res.deviceId;
+                            console.log('connectingDeviceId');
+                            console.log(connectingDeviceId);
+                            services_UUID = res.serviceId;
+                            console.log('services_UUID');
+                            console.log(services_UUID);
+                            characteristic_UUID = characteristics[k].uuid;
+                            console.log('characteristic_UUID');
+                            console.log(characteristic_UUID);
+                            that.notifyValueChange(connectingDeviceId,services_UUID,characteristic_UUID);
                         }
                     }
                 }
-                that.notifyValueChange(connectingDeviceId,services_UUID,characteristic_UUID);
+
             },
             fail(){
                 toast('获取特征值失败');
@@ -361,9 +365,9 @@ Page({
     notifyValueChange(deviceId,services_UUID,characteristic_UUID){
         let that = this;
         wx.notifyBLECharacteristicValueChange({
-            deviceId:deviceId,                          // 设备mac   IOS和安卓系统不一样
-            serviceId:services_UUID,                   // 服务通道，这里主要是notify
-            characteristicId:characteristic_UUID,     //notify uuid
+            deviceId:deviceId,
+            serviceId:services_UUID,
+            characteristicId:characteristic_UUID,
             state:true,
             success(res){
                 console.log('启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值: 成功---');
@@ -379,23 +383,24 @@ Page({
 
     // 监听低功耗蓝牙设备的特征值变化
     // 必须先启用 notifyBLECharacteristicValueChange 接口才能接收到设备推送的 notification。
-    onValueChange(){
-        that = this;
+    onValueChange(sufun){
+        let that = this;
         wx.onBLECharacteristicValueChange(function(res){
             console.log('监听低功耗蓝牙设备的特征值变化');
             console.log(res);
             console.log(ab2hex(res.value));
-            that.writeValue(connectingDeviceId,serviceId_UUID,characteristicId_UUID,1);
-            that.readValue(connectingDeviceId,serviceId_UUID,characteristicId_UUID);
+            sufun();
+            // that.writeValue(connectingDeviceId,serviceId_UUID,characteristicId_UUID,1);
+            that.readValue(connectingDeviceId,services_UUID,characteristic_UUID);
         });
     },
 
     // 读取低功耗蓝牙设备的特征值的二进制数据值
     // 接口读取到的信息需要在 onBLECharacteristicValueChange 方法注册的回调中获取
-    readValue(deviceId,service_UUID,characteristic_UUID){
+    readValue(deviceId,services_UUID,characteristic_UUID){
         wx.readBLECharacteristicValue({
             deviceId:deviceId,
-            serviceId:service_UUID,
+            serviceId:services_UUID,
             characteristicId:characteristic_UUID,
             success(res){
                 console.log('读取低功耗蓝牙设备的特征值的二进制数据值: 成功---');
@@ -410,12 +415,31 @@ Page({
 
     // 向低功耗蓝牙设备特征值中写入二进制数据
     // 建议每次写入不超过20字节
-    writeValue(deviceId,service_UUID,characteristic_UUID,value){
+    writeValue(deviceId,services_UUID,characteristic_UUID,value){
+        let that = this;
+
+        console.log('writeValue---------');
+        console.log(deviceId);
+        console.log(services_UUID);
+        console.log(characteristic_UUID);
+        console.log('writeValue---------');
+
+        // let buffer = new ArrayBuffer(value.length);
+        // let dataView = new DataView(buffer);
+        // for (let i = 0; i < value.length; i++) {
+        //     dataView.setUint8(i, value.charAt(i).charCodeAt())
+        // }
+
+        // 向蓝牙设备发送一个0x00的16进制数据
+        let buffer = new ArrayBuffer(1);
+        let dataView = new DataView(buffer);
+        dataView.setUint8(0, 0);
+
         wx.writeBLECharacteristicValue({
             deviceId:deviceId,
-            serviceId:service_UUID,
+            serviceId:services_UUID,
             characteristicId:characteristic_UUID,
-            value:value,
+            value:buffer,
             success(res){
                 console.log('向低功耗蓝牙设备特征值中写入二进制数据: 成功---');
                 console.log(res);
@@ -450,6 +474,22 @@ function ab2hex(buffer) {
     );
     return hexArr.join('');
 }
+
+
+/**
+ * 16进制字符串转ArrayBuffer
+ */
+function hexString2ArrayBuffer(hexStr) {
+    let count = hexStr.length / 2;
+    let buffer = new ArrayBuffer(count);
+    let dataView = new DataView(buffer);
+    for (let i =0; i < count; i++) {
+        let curCharCode = parseInt(hexStr.substr(i *2, 2), 16);
+        dataView.setUint8(i, curCharCode);
+    }
+    return buffer;
+}
+
 
 function toast(title) {
     wx.showToast({

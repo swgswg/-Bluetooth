@@ -12,7 +12,13 @@
 </view>
 <button bindtap='openEvent'>初始化蓝牙适配器</button>
 <button bindtap='searchEvent'>搜索蓝牙</button>
-<button bindtap='getConnected'>根据 uuid 获取处于已连接状态的设备</button>
+<view>
+    发送数据 <input style="border:1px solid red;" type="text" bindinput="inputValue" />
+    <button bindtap="sendvalue">发送</button>
+</view>
+<view>
+    接收数据 <text>{{readValue}}</text>
+</view>
 
 <view style="margin-top:30rpx;font-size: 22rpx;">
     <block wx:for="{{deviceList}}" wx:for-item="device" wx:key="{{device.deviceId}}">
