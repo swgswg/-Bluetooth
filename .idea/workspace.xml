@@ -17,16 +17,13 @@
       <file leaf-file-name="bluetooth.wxml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
+            <state relative-caret-position="812">
               <caret line="29" column="104" selection-start-line="29" selection-start-column="92" selection-end-line="29" selection-end-column="104" />
               <folding>
                 <element signature="n#style#0;n#text#0;n#view#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#view#3;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#view#0;n#block#0;n#view#4;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -35,29 +32,15 @@
       <file leaf-file-name="bluetooth.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-795">
-              <caret line="112" selection-start-line="112" selection-end-line="112" />
+            <state relative-caret-position="644">
+              <caret line="344" column="31" lean-forward="true" selection-start-line="344" selection-start-column="31" selection-end-line="344" selection-end-column="31" />
               <folding>
-                <element signature="e#249#901#0" />
-                <element signature="e#932#1624#0" />
-                <element signature="e#1378#1433#0" />
-                <element signature="e#2458#2474#0" />
-                <element signature="e#1669#2151#0" />
-                <element signature="e#2203#2333#0" />
-                <element signature="e#2313#2516#0" />
-                <element signature="e#3232#3248#0" />
-                <element signature="e#5150#5166#0" />
-                <element signature="e#5300#5316#0" />
-                <element signature="e#3851#3867#0" />
-                <element signature="e#4746#4762#0" />
-                <element signature="e#4834#4850#0" />
-                <element signature="e#5648#5664#0" />
-                <element signature="e#6027#6043#0" />
-                <element signature="e#8202#8218#0" />
-                <element signature="e#8790#8806#0" />
-                <element signature="e#9025#9041#0" />
-                <element signature="e#9623#9639#0" />
-                <element signature="e#10498#10514#0" />
+                <element signature="e#3509#3934#0" />
+                <element signature="e#3978#4377#0" />
+                <element signature="e#4408#5196#0" />
+                <element signature="e#5261#5588#0" />
+                <element signature="e#6055#6845#0" />
+                <element signature="e#6890#7234#0" />
               </folding>
             </state>
           </provider>
@@ -68,10 +51,12 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>connectingDeviceId</find>
-      <find>connected</find>
       <find>BLEConnection</find>
       <find>getBluetoothDevices</find>
       <find>getDevices</find>
+      <find>connected</find>
+      <find>discovering</find>
+      <find>services_UUID</find>
     </findStrings>
     <replaceStrings>
       <replace>deviceId</replace>
@@ -85,6 +70,9 @@
       <list>
         <option value="$PROJECT_DIR$/lib/bluetooth/scanner.js" />
         <option value="$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml" />
+        <option value="$PROJECT_DIR$/app.json" />
+        <option value="$PROJECT_DIR$/pages/index/index.js" />
+        <option value="$PROJECT_DIR$/pages/index/index.wxml" />
         <option value="$PROJECT_DIR$/pages/bluetooth/bluetooth.js" />
       </list>
     </option>
@@ -99,8 +87,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="87" />
-    <option name="y" value="58" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -126,19 +114,13 @@
             <path>
               <item name="WX_Bluetooth-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="WX_Bluetooth-master" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="bluetooth" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="WX_Bluetooth-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="WX_Bluetooth-master" type="462c0819:PsiDirectoryNode" />
               <item name="pages" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="WX_Bluetooth-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="WX_Bluetooth-master" type="462c0819:PsiDirectoryNode" />
               <item name="pages" type="462c0819:PsiDirectoryNode" />
-              <item name="bluetooth" type="462c0819:PsiDirectoryNode" />
+              <item name="index" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -179,12 +161,15 @@
       <option name="presentableId" value="Default" />
       <updated>1536918008048</updated>
       <workItem from="1536918009689" duration="3641000" />
-      <workItem from="1536973906795" duration="21694000" />
+      <workItem from="1536973906795" duration="23443000" />
+      <workItem from="1537146633500" duration="12597000" />
+      <workItem from="1537234023583" duration="19000" />
+      <workItem from="1537343863887" duration="3329000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25335000" />
+    <option name="totallyTimeSpent" value="43029000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -215,7 +200,80 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="812">
+          <caret line="29" column="104" selection-start-line="29" selection-start-column="92" selection-end-line="29" selection-end-column="104" />
+          <folding>
+            <element signature="n#style#0;n#text#0;n#view#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5096">
+          <caret line="182" column="6" selection-start-line="182" selection-start-column="6" selection-end-line="182" selection-end-column="6" />
+          <folding>
+            <element signature="e#3509#3934#0" />
+            <element signature="e#3978#4377#0" />
+            <element signature="e#4408#5196#0" />
+            <element signature="e#5261#5588#0" />
+            <element signature="e#6055#6845#0" />
+            <element signature="e#6890#7234#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="812">
+          <caret line="29" column="104" selection-start-line="29" selection-start-column="92" selection-end-line="29" selection-end-column="104" />
+          <folding>
+            <element signature="n#style#0;n#text#0;n#view#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5096">
+          <caret line="182" column="6" lean-forward="true" selection-start-line="182" selection-start-column="6" selection-end-line="182" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="812">
+          <caret line="29" column="104" selection-start-line="29" selection-start-column="92" selection-end-line="29" selection-end-column="104" />
+          <folding>
+            <element signature="n#style#0;n#text#0;n#view#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6720">
+          <caret line="240" lean-forward="true" selection-start-line="240" selection-end-line="240" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
@@ -225,9 +283,6 @@
             <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
             <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
             <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#0;n#block#0;n#view#4;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -236,28 +291,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1652">
           <caret line="59" lean-forward="true" selection-start-line="59" selection-end-line="59" />
-          <folding>
-            <element signature="e#249#901#0" />
-            <element signature="e#932#1624#0" />
-            <element signature="e#1378#1433#0" />
-            <element signature="e#2458#2474#0" />
-            <element signature="e#1669#2151#0" />
-            <element signature="e#2203#2333#0" />
-            <element signature="e#2313#2516#0" />
-            <element signature="e#3232#3248#0" />
-            <element signature="e#5150#5166#0" />
-            <element signature="e#5300#5316#0" />
-            <element signature="e#3851#3867#0" />
-            <element signature="e#4746#4762#0" />
-            <element signature="e#4834#4850#0" />
-            <element signature="e#5648#5664#0" />
-            <element signature="e#6027#6043#0" />
-            <element signature="e#8202#8218#0" />
-            <element signature="e#8790#8806#0" />
-            <element signature="e#9025#9041#0" />
-            <element signature="e#9623#9639#0" />
-            <element signature="e#10498#10514#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -268,45 +301,53 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.wxml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
+        <state relative-caret-position="812">
           <caret line="29" column="104" selection-start-line="29" selection-start-column="92" selection-end-line="29" selection-end-column="104" />
           <folding>
             <element signature="n#style#0;n#text#0;n#view#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#text#0;n#view#1;n#!!top" expanded="true" />
             <element signature="n#style#0;n#text#0;n#view#2;n#!!top" expanded="true" />
             <element signature="n#style#0;n#text#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#view#0;n#block#0;n#view#4;n#view#0;n#block#0;n#view#3;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/index/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="728">
+          <caret line="55" selection-start-line="55" selection-end-line="55" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#307#1073#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="3" column="30" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pages/index/index.wxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pages/bluetooth/bluetooth.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-795">
-          <caret line="112" selection-start-line="112" selection-end-line="112" />
+        <state relative-caret-position="644">
+          <caret line="344" column="31" lean-forward="true" selection-start-line="344" selection-start-column="31" selection-end-line="344" selection-end-column="31" />
           <folding>
-            <element signature="e#249#901#0" />
-            <element signature="e#932#1624#0" />
-            <element signature="e#1378#1433#0" />
-            <element signature="e#2458#2474#0" />
-            <element signature="e#1669#2151#0" />
-            <element signature="e#2203#2333#0" />
-            <element signature="e#2313#2516#0" />
-            <element signature="e#3232#3248#0" />
-            <element signature="e#5150#5166#0" />
-            <element signature="e#5300#5316#0" />
-            <element signature="e#3851#3867#0" />
-            <element signature="e#4746#4762#0" />
-            <element signature="e#4834#4850#0" />
-            <element signature="e#5648#5664#0" />
-            <element signature="e#6027#6043#0" />
-            <element signature="e#8202#8218#0" />
-            <element signature="e#8790#8806#0" />
-            <element signature="e#9025#9041#0" />
-            <element signature="e#9623#9639#0" />
-            <element signature="e#10498#10514#0" />
+            <element signature="e#3509#3934#0" />
+            <element signature="e#3978#4377#0" />
+            <element signature="e#4408#5196#0" />
+            <element signature="e#5261#5588#0" />
+            <element signature="e#6055#6845#0" />
+            <element signature="e#6890#7234#0" />
           </folding>
         </state>
       </provider>
