@@ -1,9 +1,19 @@
-var connectingDeviceId = '';
-var services_UUID = '';
-var characteristic_UUID = '';
-var wvalue = '';
 // 初始化蓝牙(判断用户有没有开蓝牙) --> 搜索蓝牙 --> 连接蓝牙 --> 根据连接的deviceId获取服务serviceUUID -->
 // 根据服务serviceUUID获取特征值 --> 根据特征值获取 读写权限 --> 根据读写 数据交互
+
+// var connectingDeviceId = '';
+// var services_UUID = '';
+// var characteristic_UUID = '';
+// var wvalue = '';
+var zeroClearingValue   = 'FE08010000000000000108'; // 清零
+var noZeroClearingValue = 'FE08010000000000000007'; // 不清零
+// var test             = 'FE0801010101000000010b';
+// var test             = 'FE0800010101000000010a';
+// var test                = 'FE08010000010000000109';
+// var test                = 'FE08010000010000000109';
+var test               = 'FE08010000000000000108';
+var writeValueQueue = [];
+var queueSuccess = true;
 Page({
     data: {
         openBluetoothAdapter:false,
@@ -11,9 +21,11 @@ Page({
         discovering:false,
         deviceList:[],
         connected:false,
-        services:'',
-        characteristics:'',
+        connectingDeviceId:'',
+        services_UUID:'',
+        characteristic_UUID:'',
         readValue:'',
+        shakeNum:0,
     },
 
     onLoad(){
@@ -72,25 +84,15 @@ Page({
     },
 
     inputValue(e){
-        wvalue = e.detail.value;
+        // wvalue = e.detail.value;
     },
 
     // 发送
-    sendvalue(){
-        console.log('sendvalue---------');
-        console.log(connectingDeviceId);
-        console.log(services_UUID);
-        console.log(characteristic_UUID);
-        console.log('sendvalue---------');
-        console.log(wvalue);
-        this.writeValue(connectingDeviceId,services_UUID,characteristic_UUID,wvalue);
-
-    },
-
-    // 获取服务
-    getServiceEvent(e){
-        let deviceId = e.currentTarget.dataset.deviceid;
-        this.getServices(deviceId);
+    sendvalue() {
+        let connectingDeviceId = this.data.connectingDeviceId;
+        let services_UUID = this.data.services_UUID;
+        let characteristic_UUID = this.data.characteristic_UUID;
+        this.writeValue(connectingDeviceId,services_UUID,characteristic_UUID,test);
     },
 
     // 初始化蓝牙模块
@@ -251,19 +253,20 @@ Page({
     BLEConnection(deviceId){
         let that = this;
         loading('连接中');
-        console.log('连接中');
-        console.log(deviceId);
+        // console.log('连接中');
+        // console.log(deviceId);
         wx.createBLEConnection({
             deviceId: deviceId,
             timeout: 600000,
             success(res){
                 console.log('连接成功');
                 console.log(res);
-                connectingDeviceId = deviceId;
+                // connectingDeviceId = deviceId;
                 that.setData({
-                    connected:true,
+                    connected: true,
+                    connectingDeviceId: deviceId
                 });
-                that.getServices(connectingDeviceId);
+                that.getServices(deviceId);
                 hide_Loading();
                 toast('连接成功');
             },
@@ -281,6 +284,7 @@ Page({
 
     // 断开与低功耗蓝牙设备的连接
     closeConnection(){
+        let connectingDeviceId = this.data.connectingDeviceId;
         if(!connectingDeviceId){
             return;
         }
@@ -299,12 +303,12 @@ Page({
     // 获取蓝牙设备所有服务(service) 为了获取service的UUID
     getServices(deviceId){
         let that = this;
-        console.log(deviceId);
+        // console.log(deviceId);
         wx.getBLEDeviceServices({
             deviceId:deviceId,
             success(res){
-                console.log('获取蓝牙设备service');
-                console.log(res);
+                // console.log('获取蓝牙设备service');
+                // console.log(res);
                 that.setData({
                     services:res.services
                 });
@@ -328,8 +332,8 @@ Page({
             deviceId:deviceId,
             serviceId:services_UUID,
             success(res){
-                console.log('获取蓝牙设备characteristic');
-                console.log(res);
+                // console.log('获取蓝牙设备characteristic');
+                // console.log(res);
                 if(res.errCode == 0){
                     let characteristics = res.characteristics;
                     let len = characteristics.length;
@@ -340,15 +344,20 @@ Page({
                         let write = characteristics[k].properties.write;
                         console.log(indicate,notify,read,write);
                         if(indicate && notify && read && write){
-                            connectingDeviceId = res.deviceId;
-                            console.log('connectingDeviceId');
-                            console.log(connectingDeviceId);
-                            services_UUID = res.serviceId;
-                            console.log('services_UUID');
-                            console.log(services_UUID);
-                            characteristic_UUID = characteristics[k].uuid;
-                            console.log('characteristic_UUID');
-                            console.log(characteristic_UUID);
+                            let connectingDeviceId = res.deviceId;
+                            // console.log('connectingDeviceId');
+                            // console.log(connectingDeviceId);
+                            let services_UUID = res.serviceId;
+                            // console.log('services_UUID');
+                            // console.log(services_UUID);
+                            let characteristic_UUID = characteristics[k].uuid;
+                            // console.log('characteristic_UUID');
+                            // console.log(characteristic_UUID);
+                            that.setData({
+                                connectingDeviceId: connectingDeviceId,
+                                services_UUID: services_UUID,
+                                characteristic_UUID: characteristic_UUID
+                            });
                             that.notifyValueChange(connectingDeviceId,services_UUID,characteristic_UUID);
                         }
                     }
@@ -372,6 +381,14 @@ Page({
             success(res){
                 console.log('启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值: 成功---');
                 console.log(res);
+
+                setTimeout(function () {
+                    let connectingDeviceId = that.data.connectingDeviceId;
+                    let services_UUID = that.data.services_UUID;
+                    let characteristic_UUID = that.data.characteristic_UUID;
+                    that.writeValue(connectingDeviceId,services_UUID,characteristic_UUID,test);
+                },1000);
+
                 that.onValueChange();
             },
             fail(res){
@@ -383,23 +400,30 @@ Page({
 
     // 监听低功耗蓝牙设备的特征值变化
     // 必须先启用 notifyBLECharacteristicValueChange 接口才能接收到设备推送的 notification。
-    onValueChange(sufun){
+    onValueChange(){
         let that = this;
         wx.onBLECharacteristicValueChange(function(res){
             console.log('监听低功耗蓝牙设备的特征值变化');
             console.log(res);
             console.log(ab2hex(res.value));
-            sufun();
-            // that.writeValue(connectingDeviceId,serviceId_UUID,characteristicId_UUID,1);
-            that.readValue(connectingDeviceId,services_UUID,characteristic_UUID);
+            // 获取设备返回的数据
+            let hex = ab2hex(res.value);
+            // 获取总次数
+            let num = hexSlice(hex);
+            that.setData({
+                shakeNum:num
+            });
         });
     },
 
     // 读取低功耗蓝牙设备的特征值的二进制数据值
     // 接口读取到的信息需要在 onBLECharacteristicValueChange 方法注册的回调中获取
-    readValue(deviceId,services_UUID,characteristic_UUID){
+    readValue(){
+        let connectingDeviceId = this.data.connectingDeviceId;
+        let services_UUID = this.data.services_UUID;
+        let characteristic_UUID = this.data.characteristic_UUID;
         wx.readBLECharacteristicValue({
-            deviceId:deviceId,
+            deviceId:connectingDeviceId,
             serviceId:services_UUID,
             characteristicId:characteristic_UUID,
             success(res){
@@ -413,40 +437,38 @@ Page({
         });
     },
 
-    // 向低功耗蓝牙设备特征值中写入二进制数据
-    // 建议每次写入不超过20字节
+    // 向低功耗蓝牙设备特征值中写入二进制数据 建议每次写入不超过20字节
     writeValue(deviceId,services_UUID,characteristic_UUID,value){
         let that = this;
-
-        console.log('writeValue---------');
-        console.log(deviceId);
-        console.log(services_UUID);
-        console.log(characteristic_UUID);
-        console.log('writeValue---------');
-
-        // let buffer = new ArrayBuffer(value.length);
-        // let dataView = new DataView(buffer);
-        // for (let i = 0; i < value.length; i++) {
-        //     dataView.setUint8(i, value.charAt(i).charCodeAt())
+        // LegthGt20(value);
+        // let len = writeValueQueue.length;
+        // for(let i = 0; i < len; i++){
+        //     // let buffer = hex2ab(queue[i]);
+        //     if(queueSuccess){
+        //         that.writeToBluetoothValue(deviceId,services_UUID,characteristic_UUID,writeValueQueue[i]);
+        //     }
         // }
+        that.writeToBluetoothValue(deviceId,services_UUID,characteristic_UUID,value);
+    },
 
-        // 向蓝牙设备发送一个0x00的16进制数据
-        let buffer = new ArrayBuffer(1);
-        let dataView = new DataView(buffer);
-        dataView.setUint8(0, 0);
-
+    // 蓝牙写数据
+    writeToBluetoothValue(deviceId,services_UUID,characteristic_UUID,buffer){
+        let value = hex2ab(buffer);
         wx.writeBLECharacteristicValue({
             deviceId:deviceId,
             serviceId:services_UUID,
             characteristicId:characteristic_UUID,
-            value:buffer,
+            value:value,
             success(res){
                 console.log('向低功耗蓝牙设备特征值中写入二进制数据: 成功---');
                 console.log(res);
+                queueSuccess = true;
             },
             fail(res){
                 console.log('向低功耗蓝牙设备特征值中写入二进制数据: 失败---');
                 console.log(res);
+                queueSuccess = false;
+                writeValueQueue.push(buffer);
             }
         })
     },
@@ -469,7 +491,7 @@ function ab2hex(buffer) {
     let hexArr = Array.prototype.map.call(
         new Uint8Array(buffer),
         function (bit) {
-            return ('00' + bit.toString(16)).slice(-2)
+            return ('00' + bit.toString(16)).slice(-2);
         }
     );
     return hexArr.join('');
@@ -479,17 +501,55 @@ function ab2hex(buffer) {
 /**
  * 16进制字符串转ArrayBuffer
  */
-function hexString2ArrayBuffer(hexStr) {
-    let count = hexStr.length / 2;
-    let buffer = new ArrayBuffer(count);
-    let dataView = new DataView(buffer);
-    for (let i =0; i < count; i++) {
-        let curCharCode = parseInt(hexStr.substr(i *2, 2), 16);
-        dataView.setUint8(i, curCharCode);
+function hex2ab(str) {
+    if (!str) {
+        return new ArrayBuffer(0);
     }
-    return buffer;
+    // let count = str.length;
+    // let buffer = new ArrayBuffer(count);
+    // let dataView = new DataView(buffer);
+
+    // let ind = 0;
+    // // for (let i =0; i < count; i+=2) {
+    // //     let code  = parseInt(str.substr(i, 2), 16);
+    // //     dataView.setUint8(i, code);
+    // //     ind++;
+    // // }
+
+    // for (let i = 0; i < count; i++) {
+    //     dataView.setUint8(i, str.charAt(i).charCodeAt())
+    // }
+
+    let typedArray = new Uint8Array(str.match(/[\da-f]{2}/gi).map(function (h) {
+        return parseInt(h, 16)
+    }));
+    let buffer1 = typedArray.buffer;
+    console.log(buffer1);
+    return buffer1;
 }
 
+// 超过20字节分包
+function LegthGt20(str) {
+    let val_len = str.length;
+    // let writeValueQueue = [];
+    if(val_len > 20){
+        for(let i = 0; i <= val_len; i+=21){
+            let sub = str.slice(i,i+21);
+            writeValueQueue.push(sub);
+        }
+    } else {
+        writeValueQueue.push(str);
+    }
+}
+
+// 16进制字符串取需要的字节(fe 08 01 00 01 01 01 7a0b 008f)
+function hexSlice(hex) {
+    // 取k8位
+    let k8 = hex.slice(14,16);
+    //取k9位
+    let k9 = hex.slice(16,18);
+    return parseInt(k9+k8,16);
+}
 
 function toast(title) {
     wx.showToast({
@@ -515,3 +575,4 @@ function loading(title) {
 function hide_Loading() {
     wx.hideLoading();
 }
+

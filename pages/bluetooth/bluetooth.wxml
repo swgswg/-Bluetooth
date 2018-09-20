@@ -12,12 +12,17 @@
 </view>
 <button bindtap='openEvent'>初始化蓝牙适配器</button>
 <button bindtap='searchEvent'>搜索蓝牙</button>
+
+<view>deviceId: {{connectingDeviceId}}</view>
+<view>serviceId: {{services_UUID}}</view>
+<view>characteristicId: {{characteristic_UUID}}</view>
+
 <view>
-    发送数据 <input style="border:1px solid red;" type="text" bindinput="inputValue" />
+    <!--发送数据 <input style="border:1px solid red;" type="text" bindinput="inputValue" />-->
     <button bindtap="sendvalue">发送</button>
 </view>
 <view>
-    接收数据 <text>{{readValue}}</text>
+    接收数据 <text style="color:red;">{{shakeNum}}</text>
 </view>
 
 <view style="margin-top:30rpx;font-size: 22rpx;">
@@ -34,10 +39,6 @@
                 </block>
             </view>
             <button size="mini" type="primary" data-deviceid="{{device.deviceId}}" bindtap="connectEvent">连接</button>
-            <button size="mini" type="default" data-deviceid="{{device.deviceId}}" bindtap="getServiceEvent">获取服务</button>
-            <view>
-                服务: {{seivice}}
-            </view>
         </view>
 
     </block>
