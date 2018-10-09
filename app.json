@@ -1,6 +1,5 @@
 {
   "pages":[
-    "pages/index/index",
     "pages/bluetooth/bluetooth"
   ],
   "window":{
@@ -10,6 +9,3 @@
     "navigationBarTextStyle":"black"
   }
 }
-
-
-

@@ -7,13 +7,9 @@
 // var wvalue = '';
 var zeroClearingValue   = 'FE08010000000000000108'; // 清零
 var noZeroClearingValue = 'FE08010000000000000007'; // 不清零
-// var test             = 'FE0801010101000000010b';
-// var test             = 'FE0800010101000000010a';
-// var test                = 'FE08010000010000000109';
-// var test                = 'FE08010000010000000109';
-var test               = 'FE08010000000000000108';
-var writeValueQueue = [];
-var queueSuccess = true;
+
+var test                = 'FE08010000000000000108';
+
 Page({
     data: {
         openBluetoothAdapter:false,
@@ -34,6 +30,16 @@ Page({
 
     // 初始化蓝牙
     openEvent(){
+
+        wx.getLocation({
+            type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+            success: function (res) {
+                // let latitude = res.latitude //维度
+                // let longitude = res.longitude //经度
+                console.log(res);
+            }
+        });
+
         this.openBluetooth();
     },
     
@@ -72,6 +78,13 @@ Page({
             return;
         }
         let deviceId = e.currentTarget.dataset.deviceid;
+        // let services = e.currentTarget.dataset.services;
+        // let services = [
+        //     "49535343-FE7D-4AE5-8FA9-9FAFD205E455",
+        //     "000018F0-0000-1000-8000-00805F9B34FB",
+        //     "E7810A71-73AE-499D-8C15-FAA9AEF0C3F2",
+        //     "0000180A-0000-1000-8000-00805F9B34FB"
+        // ];
         // 停止搜寻附近的蓝牙外围设备
         this.stopDiscovery();
 
@@ -80,7 +93,6 @@ Page({
 
         // 连接低功耗蓝牙设备
         this.BLEConnection(deviceId);
-
     },
 
     inputValue(e){
@@ -156,6 +168,7 @@ Page({
 
     // 开始搜寻附近的蓝牙外围设备
     startDiscovery(){
+        console.log('开始搜索设备');
         let that = this;
         wx.startBluetoothDevicesDiscovery({
             success (res) {
@@ -253,11 +266,11 @@ Page({
     BLEConnection(deviceId){
         let that = this;
         loading('连接中');
-        // console.log('连接中');
-        // console.log(deviceId);
+        console.log('连接中...');
+        console.log(deviceId);
         wx.createBLEConnection({
             deviceId: deviceId,
-            timeout: 600000,
+            timeout: 60000,
             success(res){
                 console.log('连接成功');
                 console.log(res);
@@ -277,9 +290,31 @@ Page({
                     connected:false,
                 });
                 hide_Loading();
-                toast('连接失败');
             },
         });
+    },
+
+    // 根据 uuid 获取处于已连接状态的设备
+    getConnectedDevices(services){
+        // console.log(services)
+        // let services = [
+        //     {isPrimary: true, uuid: "49535343-FE7D-4AE5-8FA9-9FAFD205E455"},
+        //     {isPrimary: true, uuid: "000018F0-0000-1000-8000-00805F9B34FB"},
+        //     {isPrimary: true, uuid: "E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"},
+        //     {isPrimary: true, uuid: "0000180A-0000-1000-8000-00805F9B34FB"}
+        //     ];
+        wx.getConnectedBluetoothDevices({
+            services:services,
+            success(res){
+                console.log('根据 uuid 获取处于已连接状态的设备,成功...');
+                console.log(res);
+            },
+            fail(res){
+                console.log('根据 uuid 获取处于已连接状态的设备,失败...');
+                console.log(res)
+            },
+
+        })
     },
 
     // 断开与低功耗蓝牙设备的连接
@@ -308,7 +343,7 @@ Page({
             deviceId:deviceId,
             success(res){
                 // console.log('获取蓝牙设备service');
-                // console.log(res);
+                console.log(res);
                 that.setData({
                     services:res.services
                 });
@@ -326,14 +361,14 @@ Page({
     },
 
     // 获取蓝牙设备某个服务中所有特征值(characteristic) 为了该特征值UUID支持的操作类型
-    getCharacteristics(deviceId,services_UUID){
+    getCharacteristics(deviceId,servicesId){
         let that = this;
         wx.getBLEDeviceCharacteristics({
             deviceId:deviceId,
-            serviceId:services_UUID,
+            serviceId:servicesId,
             success(res){
-                // console.log('获取蓝牙设备characteristic');
-                // console.log(res);
+                console.log('获取蓝牙设备characteristic');
+                console.log(res);
                 if(res.errCode == 0){
                     let characteristics = res.characteristics;
                     let len = characteristics.length;
@@ -344,15 +379,17 @@ Page({
                         let write = characteristics[k].properties.write;
                         console.log(indicate,notify,read,write);
                         if(indicate && notify && read && write){
-                            let connectingDeviceId = res.deviceId;
-                            // console.log('connectingDeviceId');
-                            // console.log(connectingDeviceId);
-                            let services_UUID = res.serviceId;
-                            // console.log('services_UUID');
-                            // console.log(services_UUID);
+                            // let connectingDeviceId = res.deviceId;
+                            let connectingDeviceId = deviceId;
+                            console.log('connectingDeviceId');
+                            console.log(connectingDeviceId);
+                            // let services_UUID = res.serviceId;
+                            let services_UUID = servicesId;
+                            console.log('services_UUID');
+                            console.log(services_UUID);
                             let characteristic_UUID = characteristics[k].uuid;
-                            // console.log('characteristic_UUID');
-                            // console.log(characteristic_UUID);
+                            console.log('characteristic_UUID');
+                            console.log(characteristic_UUID);
                             that.setData({
                                 connectingDeviceId: connectingDeviceId,
                                 services_UUID: services_UUID,
@@ -382,6 +419,8 @@ Page({
                 console.log('启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值: 成功---');
                 console.log(res);
 
+                that.onValueChange();
+
                 setTimeout(function () {
                     let connectingDeviceId = that.data.connectingDeviceId;
                     let services_UUID = that.data.services_UUID;
@@ -389,7 +428,6 @@ Page({
                     that.writeValue(connectingDeviceId,services_UUID,characteristic_UUID,test);
                 },1000);
 
-                that.onValueChange();
             },
             fail(res){
                 console.log('启用低功耗蓝牙设备特征值变化时的 notify 功能，订阅特征值: 失败---');
@@ -440,14 +478,6 @@ Page({
     // 向低功耗蓝牙设备特征值中写入二进制数据 建议每次写入不超过20字节
     writeValue(deviceId,services_UUID,characteristic_UUID,value){
         let that = this;
-        // LegthGt20(value);
-        // let len = writeValueQueue.length;
-        // for(let i = 0; i < len; i++){
-        //     // let buffer = hex2ab(queue[i]);
-        //     if(queueSuccess){
-        //         that.writeToBluetoothValue(deviceId,services_UUID,characteristic_UUID,writeValueQueue[i]);
-        //     }
-        // }
         that.writeToBluetoothValue(deviceId,services_UUID,characteristic_UUID,value);
     },
 
@@ -462,13 +492,10 @@ Page({
             success(res){
                 console.log('向低功耗蓝牙设备特征值中写入二进制数据: 成功---');
                 console.log(res);
-                queueSuccess = true;
             },
             fail(res){
                 console.log('向低功耗蓝牙设备特征值中写入二进制数据: 失败---');
                 console.log(res);
-                queueSuccess = false;
-                writeValueQueue.push(buffer);
             }
         })
     },
@@ -505,41 +532,12 @@ function hex2ab(str) {
     if (!str) {
         return new ArrayBuffer(0);
     }
-    // let count = str.length;
-    // let buffer = new ArrayBuffer(count);
-    // let dataView = new DataView(buffer);
-
-    // let ind = 0;
-    // // for (let i =0; i < count; i+=2) {
-    // //     let code  = parseInt(str.substr(i, 2), 16);
-    // //     dataView.setUint8(i, code);
-    // //     ind++;
-    // // }
-
-    // for (let i = 0; i < count; i++) {
-    //     dataView.setUint8(i, str.charAt(i).charCodeAt())
-    // }
-
     let typedArray = new Uint8Array(str.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16)
     }));
     let buffer1 = typedArray.buffer;
     console.log(buffer1);
     return buffer1;
-}
-
-// 超过20字节分包
-function LegthGt20(str) {
-    let val_len = str.length;
-    // let writeValueQueue = [];
-    if(val_len > 20){
-        for(let i = 0; i <= val_len; i+=21){
-            let sub = str.slice(i,i+21);
-            writeValueQueue.push(sub);
-        }
-    } else {
-        writeValueQueue.push(str);
-    }
 }
 
 // 16进制字符串取需要的字节(fe 08 01 00 01 01 01 7a0b 008f)

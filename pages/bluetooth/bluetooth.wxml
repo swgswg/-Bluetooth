@@ -38,7 +38,7 @@
                     <view style="margin-left: 50rpx;">{{uuid}}</view>
                 </block>
             </view>
-            <button size="mini" type="primary" data-deviceid="{{device.deviceId}}" bindtap="connectEvent">连接</button>
+            <button size="mini" type="primary" data-deviceid="{{device.deviceId}}" data-services="{{device.advertisServiceUUIDs}}" bindtap="connectEvent">连接</button>
         </view>
 
     </block>
